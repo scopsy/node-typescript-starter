@@ -1,13 +1,39 @@
-import { Controller, Post, Request, Response } from '@decorators/express';
+import { Body, Controller, Post, Request, Response } from '@decorators/express';
+import { AuthService } from '../../services/auth/auth.service';
 import { IAppRequest, IAppResponse } from '../../types/app.types';
-import { FacebookTokenAuthQueryDto } from './auth.dto';
-import { PassportFacebookTokenMiddleware } from './auth.middlewares';
+import { UnexpectedError } from '../../utils/error/UnexpectedError';
+import { FacebookTokenAuthQueryDto, LocalLoginDto, SignupDto } from './auth.dto';
+import {
+    PassportFacebookTokenMiddleware,
+    PassportLocalAuthMiddleware
+} from './auth.middlewares';
 
 @Controller('/auth')
 export class AuthController {
+    constructor(private authService: AuthService) {
+
+    }
 
     /**
-     * This end point used for authentication with access_token provided
+     * Providers user login using email and password.
+     */
+    @Post('/login', [ PassportLocalAuthMiddleware ])
+    login(@Request() req: IAppRequest<LocalLoginDto>, @Response() res: IAppResponse) {
+        if (!req.locals || !res.locals.authData) throw new UnexpectedError();
+
+        res.json(req.locals.authData);
+    }
+
+    @Post('/signup')
+    async signup(@Body() data: SignupDto, @Response() res: IAppResponse) {
+        await this.authService.createUser(data);
+
+        const authData = await this.authService.authenticateLocal(data.email, data.password);
+        res.json(authData);
+    }
+
+    /**
+     * This end point used for authentication with fb access_token provided
      * Useful when the access_token is obtained via client-side sdk
      */
     @Post('/facebook/token', [ PassportFacebookTokenMiddleware ])
@@ -15,6 +41,8 @@ export class AuthController {
         @Request() req: IAppRequest<any, FacebookTokenAuthQueryDto>,
         @Response() res: IAppResponse
     ) {
+        if (!req.locals || !res.locals.authData) throw new UnexpectedError();
+
         res.json(req.locals.authData);
     }
 }

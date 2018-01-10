@@ -12,5 +12,15 @@ export const API_ERRORS = {
         message: 'User already connected under other email.',
         status: HTTPtatusCodes.CONFLICT,
         code: 2000
-    }
+    },
+    USER_NOT_FOUND: {
+        message: 'User not found.',
+        status: HTTPtatusCodes.NOT_FOUND,
+        code: 2001
+    },
+    USER_WRONG_CREDENTIALS: {
+        message: 'Wrong credentials provided',
+        status: HTTPtatusCodes.UNAUTHORIZED,
+        code: 2002
+    },
 };

@@ -16,62 +16,28 @@ export type IAuthProviders = 'facebook';
 
 @Injectable()
 export class AuthService {
+    private USER_TOKEN_FIELDS = '_id email lastName firstName picture fullName';
+
+    /**
+     * Used to fetch user based on its id.
+     *
+     * There are multiple approaches with working with jwt,
+     * You can skip the hydration process and use only the jwt token as the user data.
+     * But if you need to invalidate user token dynamically a db/redis query should be made.
+     *
+     * @param {string} id
+     * @returns {Promise<User>}
+     */
     async rehydrateUser(id: string): Promise<User> {
-        const user = await UserRepository.findById(id, '_id firstName lastName fullName picture');
+        const user = await UserRepository.findById(id, this.USER_TOKEN_FIELDS);
         if (!user) return;
 
         return user;
     }
 
-    /**
-     * Generate jwt token using provider id.
-     * If no user was found with the current providerId and email, it will be created.
-     *
-     * Valid jwt token is returned on every successfull auth
-     * @param { IAuthProviders } provider
-     * @param { string } accessToken
-     * @param { IAuthProviderProfileDto } profile
-     * @returns { Promise<IAuthDto> }
-     */
-    async authenticateProvider(provider: IAuthProviders, accessToken: string, profile: IAuthProviderProfileDto): Promise<IAuthDto> {
-        const existingUser = await UserRepository.findOne({
-            [provider]: profile.id
-        });
-
-        if (existingUser) return await this.generateToken(existingUser);
-
-        const savedUser = await this.createUser(profile, {
-            accessToken,
-            provider
-        });
-
-        return await this.generateToken(savedUser);
-    }
-
-    private async generateToken(user: User): Promise<IAuthDto> {
-        const payload = {
-            _id: user._id,
-            email: user.email,
-            lastName: user.lastName,
-            firstName: user.firstName,
-            profilePicture: user.picture
-        };
-
-        return {
-            token: jwt.sign(payload, process.env.SECRET, { expiresIn: TOKEN_EXP }),
-            expiresIn: moment().add(TOKEN_EXP, 'ms').format('X')
-        };
-    }
-
-    private async createUser(profile: IAuthProviderProfileDto, token: IAuthToken): Promise<User> {
-        const { email, firstName, lastName, id, picture } = profile;
+    async createUser(profile: IAuthProviderProfileDto): Promise<User> {
         const user = new UserRepository({
-            email,
-            picture,
-            lastName,
-            firstName,
-            facebook: id,
-            tokens: [token]
+            ...profile
         });
 
         try {
@@ -83,5 +49,51 @@ export class AuthService {
 
             throw new UnexpectedError();
         }
+    }
+
+    async authenticateLocal(email: string, password: string): Promise<IAuthDto>  {
+        const user = await UserRepository.findOne({ email }, this.USER_TOKEN_FIELDS);
+        if (!user) throw new ApiError(API_ERRORS.USER_NOT_FOUND);
+
+        const isMatch = await user.matchPassword(password);
+        if (!isMatch) throw new ApiError(API_ERRORS.USER_WRONG_CREDENTIALS);
+
+        return await this.generateToken(user);
+    }
+
+    /**
+     * Generate jwt token using provider id.
+     * If no user was found with the current providerId and email, it will be created.
+     *
+     * Valid jwt token is returned on every successfull auth
+     * @param { IAuthProviders } provider
+     * @param { string } providerId
+     * @param { IAuthProviderProfileDto } profile
+     * @returns { Promise<IAuthDto> }
+     */
+    async authenticateProvider(provider: IAuthProviders, providerId: string, profile: IAuthProviderProfileDto): Promise<IAuthDto> {
+        const existingUser = await UserRepository.findOne({
+            [provider]: providerId
+        });
+        if (existingUser) return await this.generateToken(existingUser);
+
+        const savedUser = await this.createUser(profile);
+
+        return await this.generateToken(savedUser);
+    }
+
+    private async generateToken(user: User): Promise<IAuthDto> {
+        const payload = {
+            _id: user._id,
+            email: user.email,
+            lastName: user.lastName,
+            firstName: user.firstName,
+            picture: user.picture
+        } as User;
+
+        return {
+            token: jwt.sign(payload, process.env.SECRET, { expiresIn: TOKEN_EXP }),
+            expires: moment().add(TOKEN_EXP, 'ms').format('X')
+        };
     }
 }
