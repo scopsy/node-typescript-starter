@@ -12,8 +12,3 @@ export interface IAppRequest<T = any, S = any> extends Request {
     locals: any;
 }
 
-export interface ErrorPayload {
-    status?: number;
-    code?: number;
-    message: string;
-}

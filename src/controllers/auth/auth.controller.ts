@@ -1,6 +1,7 @@
 import { Body, Controller, Post, Request, Response } from '@decorators/express';
 import { AuthService } from '../../services/auth/auth.service';
 import { IAppRequest, IAppResponse } from '../../types/app.types';
+import { ApiError } from '../../utils/error';
 import { UnexpectedError } from '../../utils/error/UnexpectedError';
 import { FacebookTokenAuthQueryDto, LocalLoginDto, SignupDto } from './auth.dto';
 import {
@@ -26,6 +27,11 @@ export class AuthController {
 
     @Post('/signup')
     async signup(@Body() data: SignupDto, @Response() res: IAppResponse) {
+        if (!data.firstName) throw new ApiError('firstName must be provided');
+        if (!data.lastName) throw new ApiError('lastName must be provided');
+        if (!data.password) throw new ApiError('password must be provided');
+        if (!data.email) throw new ApiError('email must be provided');
+
         await this.authService.createUser(data);
 
         const authData = await this.authService.authenticateLocal(data.email, data.password);

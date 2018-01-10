@@ -36,6 +36,8 @@ export class AuthService {
     }
 
     async createUser(profile: IAuthProviderProfileDto): Promise<User> {
+        this.validateProfile(profile);
+
         const user = new UserRepository({
             ...profile
         });
@@ -49,6 +51,12 @@ export class AuthService {
 
             throw new UnexpectedError();
         }
+    }
+
+    private validateProfile(profile: IAuthProviderProfileDto) {
+        if (!profile.email) throw new ApiError('Missing email field');
+        if (!profile.firstName) throw new ApiError('Missing firstName field');
+        if (profile.password && profile.password.length < 6) throw new ApiError('Password must be 6 char long');
     }
 
     async authenticateLocal(email: string, password: string): Promise<IAuthDto>  {

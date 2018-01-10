@@ -1,6 +1,11 @@
 import { isString } from 'lodash';
-import { APIErrors } from '../../types/app.errors';
-import { ErrorPayload } from '../../types/app.types';
+import { API_ERRORS } from '../../types/app.errors';
+
+export interface ErrorPayload {
+    status?: number;
+    code?: number;
+    message: string;
+}
 
 export class ApiError extends Error {
     code: number;
@@ -18,9 +23,9 @@ export class ApiError extends Error {
 
         if (isString(payload)) {
             this.status = 500;
-            this.code = APIErrors.GENERAL_ERROR.code;
+            this.code = API_ERRORS.GENERAL_ERROR.code;
         } else {
-            this.code = (payload.code || APIErrors.GENERAL_ERROR.code);
+            this.code = (payload.code || API_ERRORS.GENERAL_ERROR.code);
             this.status = (payload.status || 500);
         }
     }

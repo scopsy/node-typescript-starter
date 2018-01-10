@@ -5,6 +5,8 @@ export interface IAuthProviderProfileDto {
     lastName: string;
     picture?: string;
     email: string;
+    password?: string;
+
     facebook?: string;
     tokens?: IAuthToken[];
 }
