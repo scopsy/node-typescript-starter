@@ -1,2 +1,2 @@
-export * from './MessageException';
+export * from './APIError';
 export * from './HttpException';

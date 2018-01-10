@@ -14,11 +14,11 @@ export interface IAppRequest<T = any, S = any> extends Request {
 
 export interface ErrorPayload {
     status?: number;
-    code?: AppErrorCode;
+    code?: APIErrorCode;
     message: string;
 }
 
-export enum AppErrorCode {
+export enum APIErrorCode {
     GENERAL_ERROR = 1000,
     UNAUTHORIZED = 1001
 }
