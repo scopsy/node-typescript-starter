@@ -14,11 +14,6 @@ export interface IAppRequest<T = any, S = any> extends Request {
 
 export interface ErrorPayload {
     status?: number;
-    code?: APIErrorCode;
+    code?: number;
     message: string;
-}
-
-export enum APIErrorCode {
-    GENERAL_ERROR = 1000,
-    UNAUTHORIZED = 1001
 }

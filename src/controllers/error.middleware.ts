@@ -1,24 +1,24 @@
 import { Injectable } from '@decorators/di';
 import { ErrorMiddleware } from '@decorators/express';
-import { APIErrorCode } from '../types/app.types';
-import { ApiError, HttpException } from '../utils/error';
+import { ApiError } from '../utils/error';
 
 export interface IApiErrorResponse {
-    code: APIErrorCode;
+    code: number;
     status: number;
     message: string;
     stack?: string;
 }
+
 @Injectable()
 export class ServerErrorMiddleware implements ErrorMiddleware {
     constructor() {}
 
-    public use(error: ApiError | HttpException, req, res, next) {
-        const { status, code, message, isPublic } = error;
+    public use(error: ApiError, req, res, next) {
+        const { status, code, message, internal } = error;
 
         const response: IApiErrorResponse = {
-            message: isPublic ? message : 'Error occurred',
-            code: isPublic ? code : status,
+            message: internal ? message : 'Error occurred',
+            code: internal ? code : status,
             status
         };
 

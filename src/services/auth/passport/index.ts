@@ -4,9 +4,10 @@ import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
 
 import { Injectable } from '@decorators/di';
 import { Application } from 'express';
+import { API_ERRORS } from '../../../types/app.errors';
 
 import { IAppRequest } from '../../../types/app.types';
-import { HttpException } from '../../../utils/error';
+import { UnexpectedError } from '../../../utils/error/UnexpectedError';
 import { AuthService } from '../auth.service';
 
 export const FACEBOOK_TOKEN_STRATEGY = 'facebook-token';
@@ -37,7 +38,7 @@ export class PassportService {
 
             done(null, user);
         } catch (e) {
-            throw new HttpException('Error occurred');
+            throw new UnexpectedError();
         }
     });
 

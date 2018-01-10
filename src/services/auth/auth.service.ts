@@ -3,8 +3,10 @@ import * as moment from 'moment';
 
 import { Injectable } from '@decorators/di';
 import { IAuthToken, User, UserRepository } from '../../dal/User';
+import { API_ERRORS } from '../../types/app.errors';
 import { MongoErrorCode } from '../../types/mongo';
-import { HttpException } from '../../utils/error';
+import { ApiError } from '../../utils/error';
+import { UnexpectedError } from '../../utils/error/UnexpectedError';
 import { IAuthDto, IAuthProviderProfileDto } from './auth.dto';
 
 const DAY = 60000 * 60 * 24;
@@ -76,13 +78,10 @@ export class AuthService {
             return await user.save();
         } catch (e) {
             if (e.code === MongoErrorCode.DUPLICATE_KEY) {
-                throw new HttpException({
-                    message: 'User already connected under other email.',
-                    status: 401
-                });
+                throw new ApiError(API_ERRORS.USER_ALREADY_EXISTS);
             }
 
-            throw new HttpException('Unexpected error occurred');
+            throw new UnexpectedError();
         }
     }
 }

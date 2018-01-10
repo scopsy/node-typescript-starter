@@ -5,7 +5,6 @@ import * as express from 'express';
 import * as mongoose from 'mongoose';
 import * as bodyParser from 'body-parser';
 import * as compression from 'compression';
-import * as PrettyError from 'pretty-error';
 
 import { Container } from '@decorators/di';
 import { attachControllers, ERROR_MIDDLEWARE } from '@decorators/express';
@@ -17,7 +16,6 @@ import { ServerErrorMiddleware } from './controllers/error.middleware';
 
 // Load environment variables from .env file, where API keys and passwords are configured
 dotenv.config({ path: '.env' });
-
 
 // Create Express server
 const app = express();
@@ -58,20 +56,5 @@ Container.provide([
 attachControllers(apiRouter as express.Express, [
     ...APP_CONTROLLERS
 ]);
-
-
-const pe = PrettyError.start();
-
-pe.skipNodeFiles();
-pe.skipPackage('express');
-
-process.on('uncaughtException', function(error){
-    console.log(pe.render(error));
-});
-
-process.on('unhandledRejection', function(reason){
-    console.log('Unhandled rejection');
-    console.log(pe.render(reason));
-});
 
 export default app;
