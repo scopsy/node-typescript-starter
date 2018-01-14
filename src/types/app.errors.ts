@@ -19,7 +19,7 @@ export const API_ERRORS = {
 
     // User Errors
     USER_ALREADY_EXISTS: {
-        message: 'User already connected under other email.',
+        message: 'User already exists.',
         status: HTTPtatusCodes.CONFLICT,
         code: 2000
     },

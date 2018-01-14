@@ -22,15 +22,15 @@ export class AuthController {
     }
 
     @Post('/signup')
-    async signup(@Body() data: SignupDto, @Response() res: IAppResponse) {
-        if (!data.firstName) throw new ApiError('firstName must be provided');
-        if (!data.lastName) throw new ApiError('lastName must be provided');
-        if (!data.password) throw new ApiError('password must be provided');
-        if (!data.email) throw new ApiError('email must be provided');
+    async signup(@Body() data: SignupDto, @Response() res: IAppResponse, @Request() req) {
+        if (!data.firstName) throw new ApiError('firstName must be provided', 400);
+        if (!data.lastName) throw new ApiError('lastName must be provided', 400);
+        if (!data.password) throw new ApiError('password must be provided', 400);
+        if (!data.email) throw new ApiError('email must be provided', 400);
 
-        await this.authService.createUser(data);
+        const user = await this.authService.createUser(data);
+        const authData = await this.authService.authenticateLocal(user.email, data.password);
 
-        const authData = await this.authService.authenticateLocal(data.email, data.password);
         res.json(authData);
     }
 

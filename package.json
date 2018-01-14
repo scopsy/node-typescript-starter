@@ -9,13 +9,12 @@
   "author": "Dima Grossman",
   "license": "MIT",
   "scripts": {
-    "start": "node dist/server.js",
-    "build": "npm run build-ts && npm run tslint",
-    "watch": "concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"cyan.bold,green.bold\" \"npm run watch-ts\" \"npm run watch-node\"",
+    "start": "node index.js",
+    "start:watch": "nodemon",
+    "prestart:prod": "npm run build",
+    "start:prod": "node dist/main.js",
+    "build": "tsc && npm run tslint",
     "test": "jest --forceExit",
-    "build-ts": "tsc",
-    "watch-ts": "tsc -w",
-    "watch-node": "nodemon dist/server.js",
     "tslint": "tslint -c tslint.json -p tsconfig.json"
   },
   "jest": {
@@ -39,7 +38,7 @@
   },
   "dependencies": {
     "@decorators/di": "^1.0.1",
-    "@decorators/express": "^2.2.0",
+    "@decorators/express": "^2.2.1",
     "@decorators/mongoose": "^3.0.0",
     "async": "^2.5.0",
     "bcrypt-nodejs": "^0.0.3",
@@ -52,6 +51,7 @@
     "express": "^4.16.2",
     "lodash": "^4.17.4",
     "lusca": "^1.5.2",
+    "mockingoose": "^2.5.0",
     "moment": "^2.20.1",
     "mongoose": "^4.13.7",
     "morgan": "^1.9.0",
@@ -90,11 +90,12 @@
     "eslint": "^4.14.0",
     "jest": "^21.2.1",
     "node-sass": "^4.5.2",
-    "nodemon": "^1.11.0",
     "shelljs": "^0.7.7",
     "supertest": "^2.0.1",
     "ts-jest": "^21.1.4",
     "tslint": "^5.8.0",
-    "typescript": "^2.4.0"
+    "typescript": "^2.4.0",
+    "nodemon": "^1.12.1",
+    "ts-node": "^3.3.0"
   }
 }

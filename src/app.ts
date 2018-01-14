@@ -53,7 +53,7 @@ Container.provide([
     { provide: ERROR_MIDDLEWARE, useClass: ServerErrorMiddleware }
 ]);
 
-attachControllers(apiRouter as express.Express, [
+attachControllers(apiRouter, [
     ...APP_CONTROLLERS
 ]);
 

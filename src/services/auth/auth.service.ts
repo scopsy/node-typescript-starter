@@ -7,6 +7,7 @@ import { API_ERRORS } from '../../types/app.errors';
 import { MongoErrorCode } from '../../types/mongo';
 import { ApiError } from '../../utils/error';
 import { UnexpectedError } from '../../utils/error/UnexpectedError';
+import { validateEmail } from '../../utils/helper.service';
 import { IAuthDto, IAuthProviderProfileDto } from './auth.dto';
 import { Request, Response, NextFunction } from 'express';
 import { PassportAuthService } from './passport/passport-auth.service';
@@ -104,14 +105,14 @@ export class AuthService {
         if (existingUser) return await this.generateToken(existingUser);
 
         const savedUser = await this.createUser(profile);
-
         return await this.generateToken(savedUser);
     }
 
     private validateProfile(profile: IAuthProviderProfileDto) {
-        if (!profile.email) throw new ApiError('Missing email field');
-        if (!profile.firstName) throw new ApiError('Missing firstName field');
-        if (profile.password && profile.password.length < 6) throw new ApiError('Password must be 6 char long');
+        if (!profile.email) throw new ApiError('Missing email field', 400);
+        if (!validateEmail(profile.email)) throw new ApiError('Invalid email address', 400);
+        if (!profile.firstName) throw new ApiError('Missing firstName field', 400);
+        if (profile.password && profile.password.length < 6) throw new ApiError('Password must be 6 char long', 400);
     }
 
     private async generateToken(user: User): Promise<IAuthDto> {

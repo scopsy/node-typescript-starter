@@ -12,7 +12,6 @@ import { AuthService } from '../auth.service';
 
 export enum AUTH_STRATEGY {
     FACEBOOK_TOKEN_STRATEGY = 'facebook-token',
-    JWT_STRATEGY = 'jwt',
     LOCAL_STRATEGY = 'local'
 }
 
@@ -27,25 +26,9 @@ export class PassportService {
     initialize(app: Application) {
         app.use(passport.initialize());
 
-        passport.use(AUTH_STRATEGY.JWT_STRATEGY, this.jwtAuthStrategy);
         passport.use(AUTH_STRATEGY.LOCAL_STRATEGY, this.passportLocalStrategy);
         passport.use(AUTH_STRATEGY.FACEBOOK_TOKEN_STRATEGY, this.facebookTokenStrategy);
     }
-
-    private jwtAuthStrategy = new JwtStrategy({
-        jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-        secretOrKey: process.env.SECRET
-    }, async (jwt_payload, done) => {
-        try {
-            const user = await this.authService.rehydrateUser(jwt_payload._id);
-            if (!user) return done(null, false);
-
-            done(null, user);
-        } catch (e) {
-            console.error(e);
-            throw new UnexpectedError();
-        }
-    });
 
     private passportLocalStrategy = new LocalStrategy({
         usernameField: 'email',

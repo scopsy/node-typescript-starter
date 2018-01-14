@@ -20,7 +20,11 @@ const AuthTokenSchema = {
 })
 @Injectable()
 export class User {
-    @SchemaField(String) email: string;
+    @SchemaField({
+        type: String,
+        trim: true,
+        lowercase: true
+    }) email: string;
     @SchemaField(String) password: string;
     @SchemaField(String) firstName: string;
     @SchemaField(String) lastName: string;
