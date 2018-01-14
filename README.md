@@ -1,4 +1,4 @@
-![](https://preview.ibb.co/djRjCR/package_header.png)
+![](https://preview.ibb.co/eq8v2R/package_header.png)
 
 Node Api Starter
 =======================
