@@ -2,12 +2,15 @@ import * as jwt from 'jsonwebtoken';
 import * as moment from 'moment';
 
 import { Injectable } from '@decorators/di';
-import { IAuthToken, User, UserRepository } from '../../dal/User';
+import { User, UserRepository } from '../../dal/User';
 import { API_ERRORS } from '../../types/app.errors';
 import { MongoErrorCode } from '../../types/mongo';
 import { ApiError } from '../../utils/error';
 import { UnexpectedError } from '../../utils/error/UnexpectedError';
 import { IAuthDto, IAuthProviderProfileDto } from './auth.dto';
+import { Request, Response, NextFunction } from 'express';
+import { PassportAuthService } from './passport/passport-auth.service';
+import { AUTH_STRATEGY } from './passport/passport.service';
 
 const DAY = 60000 * 60 * 24;
 export const TOKEN_EXP = DAY * 7;
@@ -18,6 +21,11 @@ export type IAuthProviders = 'facebook';
 export class AuthService {
     private USER_TOKEN_FIELDS = '_id email lastName firstName picture fullName';
 
+    constructor(
+        private passportAuthService: PassportAuthService
+    ) {
+
+    }
     /**
      * Used to fetch user based on its id.
      *
@@ -53,12 +61,6 @@ export class AuthService {
         }
     }
 
-    private validateProfile(profile: IAuthProviderProfileDto) {
-        if (!profile.email) throw new ApiError('Missing email field');
-        if (!profile.firstName) throw new ApiError('Missing firstName field');
-        if (profile.password && profile.password.length < 6) throw new ApiError('Password must be 6 char long');
-    }
-
     async authenticateLocal(email: string, password: string): Promise<IAuthDto>  {
         const user = await UserRepository.findOne({ email }, this.USER_TOKEN_FIELDS);
         if (!user) throw new ApiError(API_ERRORS.USER_NOT_FOUND);
@@ -67,6 +69,22 @@ export class AuthService {
         if (!isMatch) throw new ApiError(API_ERRORS.USER_WRONG_CREDENTIALS);
 
         return await this.generateToken(user);
+    }
+
+    async authenticateStrategy(strategy: AUTH_STRATEGY, req: Request, res: Response, next: NextFunction): Promise<IAuthDto>  {
+        return await this.passportAuthService.strategyAuthenticate(strategy, req, res, next);
+    }
+
+    async validateToken(token: string) {
+        try {
+            const payload = jwt.verify(token, process.env.SECRET);
+
+            return await this.rehydrateUser(payload._id);
+        } catch (e) {
+            if (e.name === 'TokenExpiredError') throw new ApiError(API_ERRORS.EXPIRED_TOKEN);
+
+            throw new ApiError(API_ERRORS.UNAUTHORIZED);
+        }
     }
 
     /**
@@ -79,7 +97,7 @@ export class AuthService {
      * @param { IAuthProviderProfileDto } profile
      * @returns { Promise<IAuthDto> }
      */
-    async authenticateProvider(provider: IAuthProviders, providerId: string, profile: IAuthProviderProfileDto): Promise<IAuthDto> {
+    async generateProviderToken(provider: IAuthProviders, providerId: string, profile: IAuthProviderProfileDto): Promise<IAuthDto> {
         const existingUser = await UserRepository.findOne({
             [provider]: providerId
         });
@@ -88,6 +106,12 @@ export class AuthService {
         const savedUser = await this.createUser(profile);
 
         return await this.generateToken(savedUser);
+    }
+
+    private validateProfile(profile: IAuthProviderProfileDto) {
+        if (!profile.email) throw new ApiError('Missing email field');
+        if (!profile.firstName) throw new ApiError('Missing firstName field');
+        if (profile.password && profile.password.length < 6) throw new ApiError('Password must be 6 char long');
     }
 
     private async generateToken(user: User): Promise<IAuthDto> {

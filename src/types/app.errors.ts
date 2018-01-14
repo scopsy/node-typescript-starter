@@ -6,6 +6,16 @@ export const API_ERRORS = {
         status: HTTPtatusCodes.INTERNAL_SERVER_ERROR,
         code: 1000
     },
+    UNAUTHORIZED: {
+        message: 'Unauthorized',
+        status: HTTPtatusCodes.UNAUTHORIZED,
+        code: 1001
+    },
+    EXPIRED_TOKEN: {
+        message: 'Expired token provided',
+        status: HTTPtatusCodes.UNAUTHORIZED,
+        code: 1002
+    },
 
     // User Errors
     USER_ALREADY_EXISTS: {

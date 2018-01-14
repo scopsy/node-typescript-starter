@@ -10,9 +10,11 @@ import { IAppRequest } from '../../../types/app.types';
 import { UnexpectedError } from '../../../utils/error/UnexpectedError';
 import { AuthService } from '../auth.service';
 
-export const FACEBOOK_TOKEN_STRATEGY = 'facebook-token';
-export const JWT_STRATEGY = 'jwt';
-export const LOCAL_STRATEGY = 'local';
+export enum AUTH_STRATEGY {
+    FACEBOOK_TOKEN_STRATEGY = 'facebook-token',
+    JWT_STRATEGY = 'jwt',
+    LOCAL_STRATEGY = 'local'
+}
 
 @Injectable()
 export class PassportService {
@@ -25,9 +27,9 @@ export class PassportService {
     initialize(app: Application) {
         app.use(passport.initialize());
 
-        passport.use(JWT_STRATEGY, this.jwtAuthStrategy);
-        passport.use(LOCAL_STRATEGY, this.passportLocalStrategy);
-        passport.use(FACEBOOK_TOKEN_STRATEGY, this.facebookTokenStrategy);
+        passport.use(AUTH_STRATEGY.JWT_STRATEGY, this.jwtAuthStrategy);
+        passport.use(AUTH_STRATEGY.LOCAL_STRATEGY, this.passportLocalStrategy);
+        passport.use(AUTH_STRATEGY.FACEBOOK_TOKEN_STRATEGY, this.facebookTokenStrategy);
     }
 
     private jwtAuthStrategy = new JwtStrategy({
@@ -40,6 +42,7 @@ export class PassportService {
 
             done(null, user);
         } catch (e) {
+            console.error(e);
             throw new UnexpectedError();
         }
     });
@@ -50,10 +53,6 @@ export class PassportService {
     }, async (req: IAppRequest, email, password, done) => {
         try {
             const auth = await this.authService.authenticateLocal(email, password);
-
-            req.locals = {
-                authData: auth
-            };
 
             done(null, auth);
         } catch (e) {
@@ -79,11 +78,7 @@ export class PassportService {
                 firstName: profile.name.givenName
             };
 
-            const auth = await this.authService.authenticateProvider('facebook', profile.id, data);
-
-            req.locals = {
-                authData: auth
-            };
+            const auth = await this.authService.generateProviderToken('facebook', profile.id, data);
 
             done(null, auth);
         } catch (e) {

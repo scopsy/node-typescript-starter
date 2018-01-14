@@ -11,7 +11,7 @@ import { attachControllers, ERROR_MIDDLEWARE } from '@decorators/express';
 
 import { API_ROOT } from './app.constants';
 import { APP_CONTROLLERS } from './controllers';
-import { PassportService } from './services/auth/passport';
+import { PassportService } from './services/auth/passport/passport.service';
 import { ServerErrorMiddleware } from './controllers/error.middleware';
 
 // Load environment variables from .env file, where API keys and passwords are configured

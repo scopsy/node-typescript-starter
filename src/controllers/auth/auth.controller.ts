@@ -1,28 +1,24 @@
-import { Body, Controller, Post, Request, Response } from '@decorators/express';
+import { Injectable } from '@decorators/di';
+import { Body, Controller, Next, Post, Request, Response } from '@decorators/express';
+import { NextFunction } from 'express';
 import { AuthService } from '../../services/auth/auth.service';
+import { AUTH_STRATEGY } from '../../services/auth/passport/passport.service';
 import { IAppRequest, IAppResponse } from '../../types/app.types';
 import { ApiError } from '../../utils/error';
-import { UnexpectedError } from '../../utils/error/UnexpectedError';
 import { FacebookTokenAuthQueryDto, LocalLoginDto, SignupDto } from './auth.dto';
-import {
-    PassportFacebookTokenMiddleware,
-    PassportLocalAuthMiddleware
-} from './auth.middlewares';
 
 @Controller('/auth')
+@Injectable()
 export class AuthController {
     constructor(private authService: AuthService) {
 
     }
 
-    /**
-     * Providers user login using email and password.
-     */
-    @Post('/login', [ PassportLocalAuthMiddleware ])
-    login(@Request() req: IAppRequest<LocalLoginDto>, @Response() res: IAppResponse) {
-        if (!req.locals || !res.locals.authData) throw new UnexpectedError();
+    @Post('/login')
+    async login(@Request() req: IAppRequest<LocalLoginDto>, @Response() res: IAppResponse, @Next() next: NextFunction) {
+        const auth = await this.authService.authenticateStrategy(AUTH_STRATEGY.LOCAL_STRATEGY, req, res, next);
 
-        res.json(req.locals.authData);
+        res.json(auth);
     }
 
     @Post('/signup')
@@ -42,14 +38,15 @@ export class AuthController {
      * This end point used for authentication with fb access_token provided
      * Useful when the access_token is obtained via client-side sdk
      */
-    @Post('/facebook/token', [ PassportFacebookTokenMiddleware ])
-    facebookTokenAuth(
+    @Post('/facebook/token')
+    async facebookTokenAuth(
         @Request() req: IAppRequest<any, FacebookTokenAuthQueryDto>,
-        @Response() res: IAppResponse
+        @Response() res: IAppResponse,
+        @Next() next: NextFunction
     ) {
-        if (!req.locals || !res.locals.authData) throw new UnexpectedError();
+        const auth = await this.authService.authenticateStrategy(AUTH_STRATEGY.FACEBOOK_TOKEN_STRATEGY, req, res, next);
 
-        res.json(req.locals.authData);
+        res.json(auth);
     }
 }
 

@@ -1,28 +1,33 @@
+import { Injectable } from '@decorators/di';
 import { Middleware } from '@decorators/express';
 import { NextFunction, Request, Response } from 'express';
-import * as passport from 'passport';
-import { FACEBOOK_TOKEN_STRATEGY, JWT_STRATEGY, LOCAL_STRATEGY } from '../../services/auth/passport';
+import { AuthService } from '../../services/auth/auth.service';
+import { API_ERRORS } from '../../types/app.errors';
+import { ApiError } from '../../utils/error';
 
-export class PassportFacebookTokenMiddleware implements Middleware {
-    public use(request: Request, response: Response, next: NextFunction): void {
-        return passport.authenticate(FACEBOOK_TOKEN_STRATEGY, {
-            session: false
-        })(request, response, next);
-    }
-}
-
-export class PassportLocalAuthMiddleware implements Middleware {
-    public use(request: Request, response: Response, next: NextFunction): void {
-        return passport.authenticate(LOCAL_STRATEGY, {
-            session: false
-        })(request, response, next);
-    }
-}
-
+@Injectable()
 export class AuthMiddleware implements Middleware  {
-    public use(request: Request, response: Response, next: NextFunction): void {
-        return passport.authenticate(JWT_STRATEGY, {
-            session: false
-        })(request, response, next);
+    constructor(private authService: AuthService) {
+
+    }
+
+    async use(request: Request, response: Response, next: NextFunction) {
+        const token = this.extractHeaderFromRequest(request);
+        if (!token) throw new ApiError(API_ERRORS.UNAUTHORIZED);
+
+        try {
+            await this.authService.validateToken(token);
+            next();
+        } catch (e) {
+            next(e);
+        }
+    }
+
+    private extractHeaderFromRequest(req: Request): string {
+        const authHeader = req.headers.authorization;
+
+        if (authHeader && authHeader.split(' ')[0] === 'Bearer') {
+            return authHeader.split(' ')[1];
+        }
     }
 }

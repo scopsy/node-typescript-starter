@@ -6,6 +6,7 @@ import { AuthMiddleware } from '../auth/auth.middlewares';
 export class UserController {
     @Get('/:id')
     async getUser(@Request() req: IAppRequest, @Response() res: IAppResponse) {
+        throw new Error('ASDASDA');
         res.send('Hello World');
     }
 }

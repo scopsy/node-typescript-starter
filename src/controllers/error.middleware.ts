@@ -17,8 +17,8 @@ export class ServerErrorMiddleware implements ErrorMiddleware {
         const { status, code, message, internal } = error;
 
         const response: IApiErrorResponse = {
-            message: internal ? message : 'Error occurred',
-            code: internal ? code : status,
+            message: internal ? 'Error occurred' : message,
+            code: internal ? status : code,
             status
         };
 
