@@ -1,6 +1,6 @@
 {
   "name": "node-typescript-starter",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A starting point for Node.js express apps with TypeScript",
   "repository": {
     "type": "git",
@@ -47,6 +47,7 @@
     "dotenv": "^2.0.0",
     "errorhandler": "^1.5.0",
     "express": "^4.16.2",
+    "jsonwebtoken": "^8.1.0",
     "lodash": "^4.17.4",
     "lusca": "^1.5.2",
     "moment": "^2.20.1",
