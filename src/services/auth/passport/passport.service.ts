@@ -1,13 +1,11 @@
 import * as passport from 'passport';
 import * as FacebookTokenStrategy from 'passport-facebook-token';
-import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
 import { Strategy as LocalStrategy } from 'passport-local';
 
 import { Injectable } from '@decorators/di';
 import { Application } from 'express';
 
 import { IAppRequest } from '../../../types/app.types';
-import { UnexpectedError } from '../../../utils/error/UnexpectedError';
 import { AuthService } from '../auth.service';
 
 export enum AUTH_STRATEGY {

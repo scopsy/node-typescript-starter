@@ -29,7 +29,7 @@ export class AuthController {
         if (!data.email) throw new ApiError('email must be provided', 400);
 
         const user = await this.authService.createUser(data);
-        const authData = await this.authService.authenticateLocal(user.email, data.password);
+        const authData = await this.authService.authenticateLocal(user.email, String(data.password));
 
         res.json(authData);
     }

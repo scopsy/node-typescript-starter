@@ -27,6 +27,7 @@ export class AuthService {
     ) {
 
     }
+
     /**
      * Used to fetch user based on its id.
      *

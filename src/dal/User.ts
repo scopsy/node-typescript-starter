@@ -23,7 +23,8 @@ export class User {
     @SchemaField({
         type: String,
         trim: true,
-        lowercase: true
+        lowercase: true,
+        unique: true
     }) email: string;
     @SchemaField(String) password: string;
     @SchemaField(String) firstName: string;
@@ -42,7 +43,7 @@ export class User {
     @Instance()
     matchPassword(candidatePassword: string) {
         return new Promise((resolve) => {
-            bcrypt.compare(candidatePassword, this.password, (err, isMatch) => {
+            bcrypt.compare(String(candidatePassword), this.password, (err, isMatch) => {
                 if (err || !isMatch) return resolve(false);
 
                 resolve(true);
@@ -58,7 +59,7 @@ export class User {
         bcrypt.genSalt(10, (err, salt) => {
             if (err) return next(err);
 
-            bcrypt.hash(user.password, salt, null, (err, hash) => {
+            bcrypt.hash(String(user.password), salt, null, (err, hash) => {
                 if (err) return next(err);
 
                 user.password = hash;
