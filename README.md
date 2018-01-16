@@ -31,6 +31,7 @@ Getting Started
 git clone --depth=1 https://github.com/scopsy/node-typescript-starter.git projectname
 
 cd projectname
+rm -rf !$/.git
 
 npm install
 
