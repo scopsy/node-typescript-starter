@@ -38,7 +38,6 @@
   },
   "dependencies": {
     "@decorators/di": "^1.0.1",
-    "@decorators/express": "^2.2.1",
     "@decorators/mongoose": "^3.0.0",
     "bcrypt-nodejs": "^0.0.3",
     "body-parser": "^1.18.2",
@@ -59,6 +58,9 @@
     "passport-local": "^1.0.0",
     "request": "^2.83.0",
     "request-promise": "^4.2.2",
+    "ts-express-decorators": "^3.7.0",
+    "ts-log-debug": "^4.0.2",
+    "typegoose": "3.4.7",
     "typescript-param-validator": "^1.1.0"
   },
   "devDependencies": {

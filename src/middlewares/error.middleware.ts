@@ -1,8 +1,11 @@
-import { Injectable } from '@decorators/di';
-import { ErrorMiddleware } from '@decorators/express';
+import { NextFunction as ExpressNext, Request as ExpressRequest, Response as ExpressResponse } from 'express';
+import {
+    IMiddlewareError, Err, Next, Request, Response,
+    OverrideMiddleware, GlobalErrorHandlerMiddleware
+} from 'ts-express-decorators';
 import { ValidatorError } from 'typescript-param-validator';
 import { API_ERRORS } from '../types/app.errors';
-import { ApiError } from '../utils/error';
+import { ApiError } from '../utils/error/index';
 
 export interface IApiErrorResponse {
     code: number;
@@ -12,11 +15,16 @@ export interface IApiErrorResponse {
     reasons?: string[];
 }
 
-@Injectable()
-export class ServerErrorMiddleware implements ErrorMiddleware {
+@OverrideMiddleware(GlobalErrorHandlerMiddleware)
+export class ServerErrorMiddleware implements IMiddlewareError {
     constructor() {}
 
-    public use(error: ApiError | ValidatorError, req, res, next) {
+    public use(
+        @Err() error: ApiError | ValidatorError,
+        @Request() request: ExpressRequest,
+        @Response() res: ExpressResponse,
+        @Next() next: ExpressNext
+    ) {
         const { status, code, message } = error as ApiError;
 
         const response: IApiErrorResponse = {

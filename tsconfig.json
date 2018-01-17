@@ -9,6 +9,7 @@
         "sourceMap": true,
         "outDir": "dist",
         "baseUrl": ".",
+        "types": ["reflect-metadata"],
         "paths": {
             "*": [
                 "node_modules/*",

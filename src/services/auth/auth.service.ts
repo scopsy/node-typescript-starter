@@ -1,8 +1,8 @@
 import * as jwt from 'jsonwebtoken';
 import * as moment from 'moment';
 
-import { Injectable } from '@decorators/di';
-import { User, UserRepository } from '../../dal/User';
+import { Service } from 'ts-express-decorators';
+import { User, UserInstance, UserRepository } from '../../dal/User';
 import { API_ERRORS } from '../../types/app.errors';
 import { MongoErrorCode } from '../../types/mongo';
 import { ApiError } from '../../utils/error';
@@ -18,7 +18,7 @@ export const TOKEN_EXP = DAY * 7;
 
 export type IAuthProviders = 'facebook';
 
-@Injectable()
+@Service()
 export class AuthService {
     private USER_TOKEN_FIELDS = '_id email lastName firstName picture fullName';
 
@@ -38,14 +38,14 @@ export class AuthService {
      * @param {string} id
      * @returns {Promise<User>}
      */
-    async rehydrateUser(id: string): Promise<User> {
+    async rehydrateUser(id: string): Promise<UserInstance> {
         const user = await UserRepository.findById(id, this.USER_TOKEN_FIELDS);
         if (!user) return;
 
         return user;
     }
 
-    async createUser(profile: IAuthProviderProfileDto): Promise<User> {
+    async createUser(profile: IAuthProviderProfileDto): Promise<UserInstance> {
         this.validateProfile(profile);
 
         const user = new UserRepository({
@@ -64,7 +64,7 @@ export class AuthService {
     }
 
     async authenticateLocal(email: string, password: string): Promise<IAuthDto>  {
-        const user = await UserRepository.findOne({ email }, this.USER_TOKEN_FIELDS);
+        const user = await UserRepository.findOne({ email }, this.USER_TOKEN_FIELDS + ' password');
         if (!user) throw new ApiError(API_ERRORS.USER_NOT_FOUND);
 
         const isMatch = await user.matchPassword(password);
@@ -93,7 +93,7 @@ export class AuthService {
      * Generate jwt token using provider id.
      * If no user was found with the current providerId and email, it will be created.
      *
-     * Valid jwt token is returned on every successfull auth
+     * Valid jwt token is returned on every successful auth
      * @param { IAuthProviders } provider
      * @param { string } providerId
      * @param { IAuthProviderProfileDto } profile
@@ -116,14 +116,14 @@ export class AuthService {
         if (profile.password && profile.password.length < 6) throw new ApiError('Password must be 6 char long', 400);
     }
 
-    private async generateToken(user: User): Promise<IAuthDto> {
-        const payload = {
+    private async generateToken(user: UserInstance): Promise<IAuthDto> {
+        const payload: UserInstance = {
             _id: user._id,
             email: user.email,
             lastName: user.lastName,
             firstName: user.firstName,
             picture: user.picture
-        } as User;
+        } as any;
 
         return {
             token: jwt.sign(payload, process.env.SECRET, { expiresIn: TOKEN_EXP }),

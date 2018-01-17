@@ -1,37 +1,38 @@
-import { Injectable } from '@decorators/di';
-import { Body, Controller, Next, Post, Request, Response } from '@decorators/express';
 import { NextFunction } from 'express';
 import { AuthService } from '../../services/auth/auth.service';
 import { AUTH_STRATEGY } from '../../services/auth/passport/passport.service';
 import { IAppRequest, IAppResponse } from '../../types/app.types';
 import { ApiError } from '../../utils/error';
 import { FacebookTokenAuthQueryDto, LocalLoginDto, SignupDto } from './auth.dto';
+import {
+    Request, BodyParams,
+    Controller, Post, Response, Next
+} from 'ts-express-decorators';
 
 @Controller('/auth')
-@Injectable()
 export class AuthController {
     constructor(private authService: AuthService) {
 
     }
 
     @Post('/login')
-    async login(@Request() req: IAppRequest<LocalLoginDto>, @Response() res: IAppResponse, @Next() next: NextFunction) {
+    async login(@Request() req: IAppRequest<LocalLoginDto>, @Response() res, @Next() next: NextFunction) {
         const auth = await this.authService.authenticateStrategy(AUTH_STRATEGY.LOCAL_STRATEGY, req, res, next);
 
         res.json(auth);
     }
 
     @Post('/signup')
-    async signup(@Body() data: SignupDto, @Response() res: IAppResponse, @Request() req) {
+    async signup(@BodyParams() data: SignupDto) {
         if (!data.firstName) throw new ApiError('firstName must be provided', 400);
         if (!data.lastName) throw new ApiError('lastName must be provided', 400);
         if (!data.password) throw new ApiError('password must be provided', 400);
         if (!data.email) throw new ApiError('email must be provided', 400);
 
         const user = await this.authService.createUser(data);
-        const authData = await this.authService.authenticateLocal(user.email, String(data.password));
+        const authData = await this.authService.authenticateLocal(user.email, data.password);
 
-        res.json(authData);
+        return authData;
     }
 
     /**

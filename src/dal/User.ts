@@ -1,46 +1,44 @@
-import { Injectable } from '@decorators/di';
-import { model, Model, Virtual, SchemaField, Hook, Instance } from '@decorators/mongoose';
-import * as mongoose from 'mongoose';
+import { prop, Typegoose, InstanceType, arrayProp, instanceMethod, pre } from 'typegoose';
 import * as bcrypt from 'bcrypt-nodejs';
+import { IAuthProviders } from '../services/auth/auth.service';
 
-export interface IAuthToken {
-    accessToken: string;
-    provider: string;
+export class AuthToken {
+    @prop() accessToken: string;
+    @prop() provider: IAuthProviders;
 }
 
-const AuthTokenSchema = {
-    provider: String,
-    accessToken: String
-};
+@pre<User>('save', function(next) {
+    const user = this;
+    if (!user.isModified('password')) return next();
 
-@Model('User', {
-    timestamps: true,
-    toObject: { virtuals: true },
-    toJSON: { virtuals: true }
+    bcrypt.genSalt(10, (err, salt) => {
+        if (err) return next(err);
+
+        bcrypt.hash(String(user.password), salt, null, (err, hash) => {
+            if (err) return next(err);
+
+            user.password = hash;
+            next();
+        });
+    });
 })
-@Injectable()
-export class User {
-    @SchemaField({
-        type: String,
-        trim: true,
-        lowercase: true,
-        unique: true
-    }) email: string;
-    @SchemaField(String) password: string;
-    @SchemaField(String) firstName: string;
-    @SchemaField(String) lastName: string;
-    @SchemaField(String) picture: string;
+export class User extends Typegoose {
+    @prop({ unique: true }) email: string;
+    @prop() password: string;
+    @prop() firstName: string;
+    @prop() lastName: string;
+    @prop() picture?: string;
 
     // Providers data
-    @SchemaField(String) facebook: string;
-    @SchemaField([AuthTokenSchema]) tokens: IAuthToken[];
+    @prop() facebook?: string;
+    @arrayProp({ items: AuthToken }) tokens?: AuthToken[];
 
-    @Virtual()
+    @prop()
     get fullName() {
         return `${this.firstName} ${this.lastName}`;
     }
 
-    @Instance()
+    @instanceMethod
     matchPassword(candidatePassword: string) {
         return new Promise((resolve) => {
             bcrypt.compare(String(candidatePassword), this.password, (err, isMatch) => {
@@ -50,27 +48,7 @@ export class User {
             });
         });
     }
-
-    @Hook('pre', 'save')
-    preSaveHook(next) {
-        const user = this;
-        if (!user.isModified('password')) return next();
-
-        bcrypt.genSalt(10, (err, salt) => {
-            if (err) return next(err);
-
-            bcrypt.hash(String(user.password), salt, null, (err, hash) => {
-                if (err) return next(err);
-
-                user.password = hash;
-                next();
-            });
-        });
-    }
 }
 
-export interface User extends mongoose.Document {
-
-}
-
-export const UserRepository = model<mongoose.Model<User>>(User);
+export type UserInstance = InstanceType<User>;
+export const UserRepository = new User().getModelForClass(User);

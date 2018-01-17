@@ -1,11 +1,9 @@
 import * as passport from 'passport';
 import * as FacebookTokenStrategy from 'passport-facebook-token';
 import { Strategy as LocalStrategy } from 'passport-local';
-
-import { Injectable } from '@decorators/di';
-import { Application } from 'express';
-
+import { ExpressApplication, Inject, Service } from 'ts-express-decorators';
 import { IAppRequest } from '../../../types/app.types';
+import { IAuthProviderProfileDto } from '../auth.dto';
 import { AuthService } from '../auth.service';
 
 export enum AUTH_STRATEGY {
@@ -13,17 +11,17 @@ export enum AUTH_STRATEGY {
     LOCAL_STRATEGY = 'local'
 }
 
-@Injectable()
+@Service()
 export class PassportService {
     constructor(
-        private authService: AuthService
+        private authService: AuthService,
+        @Inject(ExpressApplication) private expressApplication: ExpressApplication
     ) {
 
     }
 
-    initialize(app: Application) {
-        app.use(passport.initialize());
-
+    $beforeRoutesInit() {
+        this.expressApplication.use(passport.initialize());
         passport.use(AUTH_STRATEGY.LOCAL_STRATEGY, this.passportLocalStrategy);
         passport.use(AUTH_STRATEGY.FACEBOOK_TOKEN_STRATEGY, this.facebookTokenStrategy);
     }
@@ -47,7 +45,7 @@ export class PassportService {
         passReqToCallback: true
     }, async (req: IAppRequest, accessToken, refreshToken, profile, done)  => {
         try {
-            const data = {
+            const data: IAuthProviderProfileDto = {
                 facebook: profile.id,
                 tokens: [{
                     accessToken,

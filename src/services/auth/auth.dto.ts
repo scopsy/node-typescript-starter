@@ -1,4 +1,4 @@
-import { IAuthToken } from '../../dal/User';
+import { AuthToken } from '../../dal/User';
 
 export interface IAuthProviderProfileDto {
     firstName: string;
@@ -8,7 +8,7 @@ export interface IAuthProviderProfileDto {
     password?: string;
 
     facebook?: string;
-    tokens?: IAuthToken[];
+    tokens?: AuthToken[];
 }
 
 export interface IAuthDto {
