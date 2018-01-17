@@ -16,9 +16,10 @@ export class AuthMiddleware implements Middleware  {
         if (!token) throw new ApiError(API_ERRORS.UNAUTHORIZED);
 
         try {
-            await this.authService.validateToken(token);
+            request.user = await this.authService.validateToken(token);
             next();
         } catch (e) {
+            request.user = null;
             next(e);
         }
     }
