@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import * as lusca from 'lusca';
 import * as dotenv from 'dotenv';
 import * as logger from 'morgan';
@@ -13,6 +14,7 @@ import { API_ROOT } from './app.constants';
 import { APP_CONTROLLERS } from './controllers';
 import { PassportService } from './services/auth/passport/passport.service';
 import { ServerErrorMiddleware } from './controllers/error.middleware';
+import { ApiError } from './utils/error';
 
 // Load environment variables from .env file, where API keys and passwords are configured
 dotenv.config({ path: '.env' });
@@ -56,5 +58,9 @@ Container.provide([
 attachControllers(apiRouter, [
     ...APP_CONTROLLERS
 ]);
+
+process.on('unhandledRejection', (reason, p) => {
+    // application specific logging, throwing an error, or other logic here
+});
 
 export default app;

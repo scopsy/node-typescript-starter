@@ -1,12 +1,11 @@
-import { Controller, Get, Request, Response } from '@decorators/express';
+import { Controller, Next, Post, Request, Response } from '@decorators/express';
 import { IAppRequest, IAppResponse } from '../../types/app.types';
-import { AuthMiddleware } from '../auth/auth.middlewares';
 
-@Controller('/users', [ AuthMiddleware ])
+@Controller('/users', [ /*AuthMiddleware*/ ])
 export class UserController {
 
-    @Get('/:id')
-    async getUser(@Request() req: IAppRequest, @Response() res: IAppResponse) {
+    @Post('/:id')
+    async getUser(@Request() req: IAppRequest, @Response() res: IAppResponse, @Next() next) {
         res.send('Hello World');
     }
 }

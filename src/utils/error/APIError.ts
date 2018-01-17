@@ -10,7 +10,6 @@ export interface ErrorPayload {
 export class ApiError extends Error {
     code: number;
     status: number;
-    internal: boolean;
 
     constructor(payload: string | ErrorPayload, status = 500) {
         super(isString(payload) ? payload : payload.message);
