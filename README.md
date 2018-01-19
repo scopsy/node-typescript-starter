@@ -10,6 +10,7 @@ A starter for **Node.js** web api's.
 
 Features
 --------
+- [ts-express-decorator](https://github.com/Romakita/ts-express-decorators)
 - **Local authentication** using Email and Password
 - **Facebook authentication** for client side sdk integration
 - **JWT** token authentication
