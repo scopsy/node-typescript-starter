@@ -11,4 +11,3 @@ export interface IAppRequest<T = any, S = any> extends Request {
     query: S;
     locals: any;
 }
-

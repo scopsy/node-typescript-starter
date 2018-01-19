@@ -1,14 +1,14 @@
 import * as jwt from 'jsonwebtoken';
 import * as moment from 'moment';
 
-import { Service } from 'ts-express-decorators';
-import { User, UserInstance, UserRepository } from '../../dal/User';
+import { Inject, Service } from 'ts-express-decorators';
+import { UserInstance, UserRepository } from '../../dal/User';
 import { API_ERRORS } from '../../types/app.errors';
 import { MongoErrorCode } from '../../types/mongo';
 import { ApiError } from '../../utils/error';
 import { UnexpectedError } from '../../utils/error/UnexpectedError';
 import { validateEmail } from '../../utils/helper.service';
-import { IAuthDto, IAuthProviderProfileDto } from './auth.dto';
+import { AuthDto, IAuthProviderProfileDto } from './auth.dto';
 import { Request, Response, NextFunction } from 'express';
 import { PassportAuthService } from './passport/passport-auth.service';
 import { AUTH_STRATEGY } from './passport/passport.service';
@@ -16,13 +16,16 @@ import { AUTH_STRATEGY } from './passport/passport.service';
 const DAY = 60000 * 60 * 24;
 export const TOKEN_EXP = DAY * 7;
 
-export type IAuthProviders = 'facebook';
+export enum AuthProviderEnum {
+    FACEBOOK = 'facebook'
+}
 
 @Service()
 export class AuthService {
     private USER_TOKEN_FIELDS = '_id email lastName firstName picture fullName';
 
     constructor(
+        @Inject(UserRepository) private userRepository: UserRepository,
         private passportAuthService: PassportAuthService
     ) {
 
@@ -39,7 +42,7 @@ export class AuthService {
      * @returns {Promise<User>}
      */
     async rehydrateUser(id: string): Promise<UserInstance> {
-        const user = await UserRepository.findById(id, this.USER_TOKEN_FIELDS);
+        const user = await this.userRepository.findById(id, this.USER_TOKEN_FIELDS);
         if (!user) return;
 
         return user;
@@ -48,7 +51,7 @@ export class AuthService {
     async createUser(profile: IAuthProviderProfileDto): Promise<UserInstance> {
         this.validateProfile(profile);
 
-        const user = new UserRepository({
+        const user = new this.userRepository({
             ...profile
         });
 
@@ -63,8 +66,8 @@ export class AuthService {
         }
     }
 
-    async authenticateLocal(email: string, password: string): Promise<IAuthDto>  {
-        const user = await UserRepository.findOne({ email }, this.USER_TOKEN_FIELDS + ' password');
+    async authenticateLocal(email: string, password: string): Promise<AuthDto>  {
+        const user = await this.userRepository.findOne({ email }, this.USER_TOKEN_FIELDS + ' password');
         if (!user) throw new ApiError(API_ERRORS.USER_NOT_FOUND);
 
         const isMatch = await user.matchPassword(password);
@@ -73,7 +76,7 @@ export class AuthService {
         return await this.generateToken(user);
     }
 
-    async authenticateStrategy(strategy: AUTH_STRATEGY, req: Request, res: Response, next: NextFunction): Promise<IAuthDto>  {
+    async authenticateStrategy(strategy: AUTH_STRATEGY, req: Request, res: Response, next: NextFunction): Promise<AuthDto>  {
         return await this.passportAuthService.strategyAuthenticate(strategy, req, res, next);
     }
 
@@ -97,10 +100,10 @@ export class AuthService {
      * @param { IAuthProviders } provider
      * @param { string } providerId
      * @param { IAuthProviderProfileDto } profile
-     * @returns { Promise<IAuthDto> }
+     * @returns { Promise<AuthDto> }
      */
-    async generateProviderToken(provider: IAuthProviders, providerId: string, profile: IAuthProviderProfileDto): Promise<IAuthDto> {
-        const existingUser = await UserRepository.findOne({
+    async generateProviderToken(provider: AuthProviderEnum, providerId: string, profile: IAuthProviderProfileDto): Promise<AuthDto> {
+        const existingUser = await this.userRepository.findOne({
             [provider]: providerId
         });
         if (existingUser) return await this.generateToken(existingUser);
@@ -116,7 +119,7 @@ export class AuthService {
         if (profile.password && profile.password.length < 6) throw new ApiError('Password must be 6 char long', 400);
     }
 
-    private async generateToken(user: UserInstance): Promise<IAuthDto> {
+    private async generateToken(user: UserInstance): Promise<AuthDto> {
         const payload: UserInstance = {
             _id: user._id,
             email: user.email,

@@ -1,3 +1,4 @@
+import { JsonProperty } from 'ts-express-decorators';
 import { AuthToken } from '../../dal/User';
 
 export interface IAuthProviderProfileDto {
@@ -11,8 +12,10 @@ export interface IAuthProviderProfileDto {
     tokens?: AuthToken[];
 }
 
-export interface IAuthDto {
+export class AuthDto {
+    @JsonProperty()
     token: string;
     // Time to expiration specified in EPOC ms
+    @JsonProperty()
     expires: string;
 }

@@ -9,8 +9,7 @@
   "author": "Dima Grossman",
   "license": "MIT",
   "scripts": {
-    "start": "node index.js",
-    "start:watch": "nodemon",
+    "start": "nodemon",
     "prestart:prod": "npm run build",
     "start:prod": "node dist/main.js",
     "build": "tsc && npm run tslint",
@@ -37,8 +36,7 @@
     "testEnvironment": "node"
   },
   "dependencies": {
-    "@decorators/di": "^1.0.1",
-    "@decorators/mongoose": "^3.0.0",
+    "ajv": "^6.0.1",
     "bcrypt-nodejs": "^0.0.3",
     "body-parser": "^1.18.2",
     "class-transformer": "^0.1.8",
@@ -58,6 +56,7 @@
     "passport-local": "^1.0.0",
     "request": "^2.83.0",
     "request-promise": "^4.2.2",
+    "swagger-ui-express": "^2.0.14",
     "ts-express-decorators": "^3.7.0",
     "ts-log-debug": "^4.0.2",
     "typegoose": "3.4.7",

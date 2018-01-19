@@ -1,10 +1,10 @@
 import 'reflect-metadata';
+import 'ts-express-decorators/swagger';
 
 import * as Path from 'path';
 import * as dotenv from 'dotenv';
 import * as logger from 'morgan';
 import * as express from 'express';
-import * as mongoose from 'mongoose';
 import * as bodyParser from 'body-parser';
 import * as compression from 'compression';
 
@@ -27,7 +27,11 @@ const rootDir = Path.resolve(__dirname);
     ],
     httpPort: process.env.PORT || 3000,
     httpsPort: false,
-    acceptMimes: ['application/json']
+    acceptMimes: ['application/json'],
+    swagger: {
+        showExplorer: true,
+        path: '/api-docs'
+    }
 })
 export class Server extends ServerLoader {
     /**

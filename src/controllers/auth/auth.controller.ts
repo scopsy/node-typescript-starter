@@ -1,12 +1,16 @@
 import { NextFunction } from 'express';
+import { Returns } from 'ts-express-decorators/lib/swagger';
+import { Validate, Validator } from 'typescript-param-validator';
+import { AuthDto } from '../../services/auth/auth.dto';
 import { AuthService } from '../../services/auth/auth.service';
 import { AUTH_STRATEGY } from '../../services/auth/passport/passport.service';
 import { IAppRequest, IAppResponse } from '../../types/app.types';
 import { ApiError } from '../../utils/error';
 import { FacebookTokenAuthQueryDto, LocalLoginDto, SignupDto } from './auth.dto';
 import {
+    QueryParams,
     Request, BodyParams,
-    Controller, Post, Response, Next
+    Controller, Post, Response, Next, Required
 } from 'ts-express-decorators';
 
 @Controller('/auth')
@@ -16,19 +20,25 @@ export class AuthController {
     }
 
     @Post('/login')
-    async login(@Request() req: IAppRequest<LocalLoginDto>, @Response() res, @Next() next: NextFunction) {
+    @Returns(AuthDto)
+    @Validate()
+    async login(
+        @Validator() @BodyParams() body: LocalLoginDto,
+        @Request() req: any,
+        @Response() res,
+        @Next() next: NextFunction
+    ) {
         const auth = await this.authService.authenticateStrategy(AUTH_STRATEGY.LOCAL_STRATEGY, req, res, next);
 
         res.json(auth);
     }
 
     @Post('/signup')
-    async signup(@BodyParams() data: SignupDto) {
-        if (!data.firstName) throw new ApiError('firstName must be provided', 400);
-        if (!data.lastName) throw new ApiError('lastName must be provided', 400);
-        if (!data.password) throw new ApiError('password must be provided', 400);
-        if (!data.email) throw new ApiError('email must be provided', 400);
-
+    @Returns(AuthDto)
+    @Validate()
+    async signup(
+        @Validator() @BodyParams() data: SignupDto
+    ) {
         const user = await this.authService.createUser(data);
         const authData = await this.authService.authenticateLocal(user.email, data.password);
 
@@ -40,7 +50,9 @@ export class AuthController {
      * Useful when the access_token is obtained via client-side sdk
      */
     @Post('/facebook/token')
+    @Returns(AuthDto)
     async facebookTokenAuth(
+        @Required() @QueryParams('access_token') token: string,
         @Request() req: IAppRequest<any, FacebookTokenAuthQueryDto>,
         @Response() res: IAppResponse,
         @Next() next: NextFunction

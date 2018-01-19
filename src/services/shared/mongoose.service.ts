@@ -2,19 +2,13 @@ import * as mongoose from 'mongoose';
 import { Service } from 'ts-express-decorators';
 import { $log } from 'ts-log-debug';
 
-(<any>mongoose).Promise = global.Promise;
+(mongoose as any).Promise = global.Promise;
 
 @Service()
 export class MongooseService {
 
     static resource: mongoose.Connection;
 
-    getResource = (): mongoose.Connection => MongooseService.resource;
-
-    /**
-     *
-     * @returns {Promise<Mongoose.Connection>}
-     */
     static async connect(): Promise<mongoose.Connection> {
         const mongoUrl = process.env.MONGODB_URI;
 

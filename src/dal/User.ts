@@ -1,39 +1,43 @@
-import { prop, Typegoose, InstanceType, arrayProp, instanceMethod, pre } from 'typegoose';
+import { InjectorService, JsonProperty } from 'ts-express-decorators';
+import { prop, Typegoose, InstanceType, arrayProp, instanceMethod, pre, ModelType } from 'typegoose';
 import * as bcrypt from 'bcrypt-nodejs';
-import { IAuthProviders } from '../services/auth/auth.service';
+import { AuthProviderEnum } from '../services/auth/auth.service';
 
 export class AuthToken {
     @prop() accessToken: string;
-    @prop() provider: IAuthProviders;
+    @prop() provider: AuthProviderEnum;
 }
 
-@pre<User>('save', function(next) {
-    const user = this;
-    if (!user.isModified('password')) return next();
-
-    bcrypt.genSalt(10, (err, salt) => {
-        if (err) return next(err);
-
-        bcrypt.hash(String(user.password), salt, null, (err, hash) => {
-            if (err) return next(err);
-
-            user.password = hash;
-            next();
-        });
-    });
-})
+@pre<User>('save', preSaveHook)
 export class User extends Typegoose {
-    @prop({ unique: true }) email: string;
-    @prop() password: string;
-    @prop() firstName: string;
-    @prop() lastName: string;
-    @prop() picture?: string;
+    @prop({ unique: true })
+    @JsonProperty()
+    email: string;
+
+    @prop()
+    @JsonProperty()
+    firstName: string;
+
+    @prop()
+    @JsonProperty()
+    lastName: string;
+
+    @prop()
+    @JsonProperty()
+    password?: string;
+
+    @prop()
+    @JsonProperty()
+    picture?: string;
 
     // Providers data
     @prop() facebook?: string;
     @arrayProp({ items: AuthToken }) tokens?: AuthToken[];
 
     @prop()
+    @JsonProperty({
+        use: String
+    })
     get fullName() {
         return `${this.firstName} ${this.lastName}`;
     }
@@ -50,5 +54,23 @@ export class User extends Typegoose {
     }
 }
 
+async function preSaveHook(next) {
+    const user = this;
+    if (!user.isModified('password')) return next();
+
+    bcrypt.genSalt(10, (err, salt) => {
+        if (err) return next(err);
+
+        bcrypt.hash(String(user.password), salt, null, (err, hash) => {
+            if (err) return next(err);
+
+            user.password = hash;
+            next();
+        });
+    });
+}
+
 export type UserInstance = InstanceType<User>;
-export const UserRepository = new User().getModelForClass(User);
+export type UserRepository = ModelType<User>;
+export const UserRepository = Symbol('UserRepository');
+InjectorService.factory(UserRepository, new User().getModelForClass(User));

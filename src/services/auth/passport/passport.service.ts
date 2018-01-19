@@ -4,7 +4,7 @@ import { Strategy as LocalStrategy } from 'passport-local';
 import { ExpressApplication, Inject, Service } from 'ts-express-decorators';
 import { IAppRequest } from '../../../types/app.types';
 import { IAuthProviderProfileDto } from '../auth.dto';
-import { AuthService } from '../auth.service';
+import { AuthProviderEnum, AuthService } from '../auth.service';
 
 export enum AUTH_STRATEGY {
     FACEBOOK_TOKEN_STRATEGY = 'facebook-token',
@@ -49,7 +49,7 @@ export class PassportService {
                 facebook: profile.id,
                 tokens: [{
                     accessToken,
-                    provider: 'facebook'
+                    provider: AuthProviderEnum.FACEBOOK
                 }],
                 email: profile.emails[0].value,
                 picture: profile.photos[0] && profile.photos[0].value,
@@ -57,7 +57,7 @@ export class PassportService {
                 firstName: profile.name.givenName
             };
 
-            const auth = await this.authService.generateProviderToken('facebook', profile.id, data);
+            const auth = await this.authService.generateProviderToken(AuthProviderEnum.FACEBOOK, profile.id, data);
 
             done(null, auth);
         } catch (e) {

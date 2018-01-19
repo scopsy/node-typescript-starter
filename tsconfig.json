@@ -9,13 +9,15 @@
         "sourceMap": true,
         "outDir": "dist",
         "baseUrl": ".",
-        "types": ["reflect-metadata"],
         "paths": {
             "*": [
                 "node_modules/*",
                 "src/types/*"
             ]
-        }
+        },
+        "typeRoots": [
+            "node_modules/@types"
+        ]
     },
     "include": [
         "src/**/*"
