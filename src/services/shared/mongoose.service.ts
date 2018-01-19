@@ -6,7 +6,6 @@ import { $log } from 'ts-log-debug';
 
 @Service()
 export class MongooseService {
-
     static resource: mongoose.Connection;
 
     static async connect(): Promise<mongoose.Connection> {
@@ -16,7 +15,6 @@ export class MongooseService {
             return MongooseService.resource;
         }
 
-        $log.debug('new MongooseUrl().toString()', mongoUrl);
         const db = await mongoose.connect(mongoUrl, {
             useMongoClient: true
         });
