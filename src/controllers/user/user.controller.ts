@@ -1,4 +1,4 @@
-import { Controller, Post, PathParams, Authenticated, Required } from 'ts-express-decorators';
+import { Controller, Get, PathParams, Authenticated, Required } from 'ts-express-decorators';
 import { Returns } from 'ts-express-decorators/lib/swagger';
 import { User } from '@dal/User';
 import { UserService } from '@services/user/user.service';
@@ -12,7 +12,7 @@ export class UserController {
 
     }
 
-    @Post('/:id')
+    @Get('/:id')
     @Returns(User)
     async getUser(@Required() @PathParams('id') id: string): Promise<User> {
         return await this.userService.getUserById(id);

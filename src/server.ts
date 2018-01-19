@@ -29,7 +29,6 @@ const rootDir = Path.resolve(__dirname);
     httpsPort: false,
     acceptMimes: ['application/json'],
     swagger: {
-        showExplorer: true,
         path: '/api-docs'
     }
 })
