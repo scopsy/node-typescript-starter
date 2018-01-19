@@ -1,4 +1,4 @@
-![](http://i68.tinypic.com/11ccak5.png)
+![](http://i66.tinypic.com/34glvt3.png)
 
 Node Api Starter
 =======================
