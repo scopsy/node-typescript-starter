@@ -14,8 +14,10 @@ Features
 - **Facebook authentication** for client side sdk integration
 - **JWT** token authentication
 - **Typescript**
+- **Swagger documentation**
+- **class-validator** for validating controller json input
 - Scalable design
-- ESnext features
+- ES next features
 
 Prerequisites
 -------------
@@ -36,6 +38,5 @@ rm -rf !$/.git
 npm install
 
 # start your app
-npm start:watch
+npm start
 ```
-
