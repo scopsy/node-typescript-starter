@@ -1,4 +1,4 @@
-export const enum HTTPtatusCodes {
+export const enum HTTPStatusCodes {
     CONTINUE = 100,
     SWITCHING_PROTOCOLS = 101,
     OK = 200,

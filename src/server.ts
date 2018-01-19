@@ -18,7 +18,7 @@ const rootDir = Path.resolve(__dirname);
 @ServerSettings({
     rootDir,
     mount: {
-        '/v1/api': `${rootDir}/controllers/**/*.controller.ts`
+        '/v1': `${rootDir}/controllers/**/*.controller.ts`
     },
     componentsScan: [
         `${rootDir}/services/**/**.service.ts`,
@@ -59,10 +59,10 @@ export class Server extends ServerLoader {
     }
 
     public $onReady() {
-        console.log('Server started...');
+        $log.info('Server started...');
     }
 
     public $onServerInitError(err) {
-        console.error(err);
+        $log.error(err);
     }
 }

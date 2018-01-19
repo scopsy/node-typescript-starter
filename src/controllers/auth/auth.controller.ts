@@ -5,12 +5,13 @@ import { AuthDto } from '../../services/auth/auth.dto';
 import { AuthService } from '../../services/auth/auth.service';
 import { AUTH_STRATEGY } from '../../services/auth/passport/passport.service';
 import { IAppRequest, IAppResponse } from '../../types/app.types';
+import { HTTPStatusCodes } from '../../types/http';
 import { ApiError } from '../../utils/error';
 import { FacebookTokenAuthQueryDto, LocalLoginDto, SignupDto } from './auth.dto';
 import {
     QueryParams,
     Request, BodyParams,
-    Controller, Post, Response, Next, Required
+    Controller, Post, Response, Next, Required, Status
 } from 'ts-express-decorators';
 
 @Controller('/auth')
@@ -36,6 +37,7 @@ export class AuthController {
     @Post('/signup')
     @Returns(AuthDto)
     @Validate()
+    @Status(HTTPStatusCodes.CREATED)
     async signup(
         @Validator() @BodyParams() data: SignupDto
     ) {

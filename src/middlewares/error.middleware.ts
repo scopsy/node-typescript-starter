@@ -25,7 +25,8 @@ export class ServerErrorMiddleware implements IMiddlewareError {
         @Response() res: ExpressResponse,
         @Next() next: ExpressNext
     ) {
-        const { status, code, message } = error as ApiError;
+        // tslint:disable-next-line
+        let { status, code, message } = error as ApiError;
 
         const response: IApiErrorResponse = {
             message: message || 'Error occurred',
@@ -51,6 +52,8 @@ export class ServerErrorMiddleware implements IMiddlewareError {
                 return items;
             });
 
+            status = 400;
+            response.status = 400;
             response.reasons = [].concat(...messages);
         }
 
