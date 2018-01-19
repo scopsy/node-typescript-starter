@@ -1,8 +1,8 @@
-import { NextFunction, Request, Response } from 'express';
+import { Request } from 'express';
 import { IMiddleware, OverrideMiddleware, AuthenticatedMiddleware,
     EndpointInfo, EndpointMetadata, Req
 } from 'ts-express-decorators';
-import { AuthService } from '../services/auth/auth.service';
+import { AuthService } from '@services/auth/auth.service';
 import { API_ERRORS } from '../types/app.errors';
 import { ApiError } from '../utils/error';
 

@@ -1,13 +1,13 @@
+import { UserRepository, UserInstance } from '@dal/User';
 import * as jwt from 'jsonwebtoken';
 import * as moment from 'moment';
 
 import { Inject, Service } from 'ts-express-decorators';
-import { UserInstance, UserRepository } from '../../dal/User';
-import { API_ERRORS } from '../../types/app.errors';
-import { MongoErrorCode } from '../../types/mongo';
-import { ApiError } from '../../utils/error';
-import { UnexpectedError } from '../../utils/error/UnexpectedError';
-import { validateEmail } from '../../utils/helper.service';
+import { API_ERRORS } from '@app-types/app.errors';
+import { MongoErrorCode } from '@app-types/mongo';
+import { ApiError } from '@utils/error';
+import { UnexpectedError } from '@utils/error/UnexpectedError';
+import { validateEmail } from '@utils/helper.service';
 import { AuthDto, IAuthProviderProfileDto } from './auth.dto';
 import { Request, Response, NextFunction } from 'express';
 import { PassportAuthService } from './passport/passport-auth.service';

@@ -1,12 +1,11 @@
 import { NextFunction } from 'express';
 import { Returns } from 'ts-express-decorators/lib/swagger';
 import { Validate, Validator } from 'typescript-param-validator';
-import { AuthDto } from '../../services/auth/auth.dto';
-import { AuthService } from '../../services/auth/auth.service';
-import { AUTH_STRATEGY } from '../../services/auth/passport/passport.service';
-import { IAppRequest, IAppResponse } from '../../types/app.types';
-import { HTTPStatusCodes } from '../../types/http';
-import { ApiError } from '../../utils/error';
+import { AuthDto } from '@services/auth/auth.dto';
+import { AuthService } from '@services/auth/auth.service';
+import { AUTH_STRATEGY } from '@services/auth/passport/passport.service';
+import { IAppRequest, IAppResponse } from '@app-types/app.types';
+import { HTTPStatusCodes } from '@app-types/http';
 import { FacebookTokenAuthQueryDto, LocalLoginDto, SignupDto } from './auth.dto';
 import {
     QueryParams,
@@ -36,8 +35,8 @@ export class AuthController {
 
     @Post('/signup')
     @Returns(AuthDto)
-    @Validate()
     @Status(HTTPStatusCodes.CREATED)
+    @Validate()
     async signup(
         @Validator() @BodyParams() data: SignupDto
     ) {

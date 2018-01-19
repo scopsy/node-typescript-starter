@@ -5,7 +5,7 @@ import {
 } from 'ts-express-decorators';
 import { ValidatorError } from 'typescript-param-validator';
 import { API_ERRORS } from '../types/app.errors';
-import { ApiError } from '../utils/error/index';
+import { ApiError } from '../utils/error';
 
 export interface IApiErrorResponse {
     code: number;
