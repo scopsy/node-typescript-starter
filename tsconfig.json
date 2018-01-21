@@ -10,10 +10,7 @@
         "outDir": "dist",
         "baseUrl": ".",
         "paths": {
-            "@services/*": ["./src/services/*"],
-            "@dal/*": ["./src/dal/*"],
-            "@utils/*": ["./src/utils/*"],
-            "@app-types/*": ["./src/types/*"]
+            "@api/*":["./src/*"]
         },
         "typeRoots": [
             "node_modules/@types"

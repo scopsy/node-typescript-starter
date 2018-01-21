@@ -1,10 +1,11 @@
+import { AuthProviderEnum } from '@api/dal/User';
 import * as passport from 'passport';
 import * as FacebookTokenStrategy from 'passport-facebook-token';
 import { Strategy as LocalStrategy } from 'passport-local';
 import { ExpressApplication, Inject, Service } from 'ts-express-decorators';
 import { IAppRequest } from '../../../types/app.types';
 import { IAuthProviderProfileDto } from '../auth.dto';
-import { AuthProviderEnum, AuthService } from '../auth.service';
+import { AuthService } from '../auth.service';
 
 export enum AUTH_STRATEGY {
     FACEBOOK_TOKEN_STRATEGY = 'facebook-token',
@@ -17,7 +18,6 @@ export class PassportService {
         private authService: AuthService,
         @Inject(ExpressApplication) private expressApplication: ExpressApplication
     ) {
-
     }
 
     $beforeRoutesInit() {

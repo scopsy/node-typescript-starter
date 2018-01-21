@@ -1,11 +1,15 @@
+import { UserRepositoryToken } from '@api/dal/token-constants';
 import { InjectorService, JsonProperty } from 'ts-express-decorators';
 import { prop, Typegoose, InstanceType, arrayProp, instanceMethod, pre, ModelType } from 'typegoose';
 import * as bcrypt from 'bcrypt-nodejs';
-import { AuthProviderEnum } from '../services/auth/auth.service';
+
+export enum AuthProviderEnum {
+    FACEBOOK = 'facebook'
+}
 
 export class AuthToken {
     @prop() accessToken: string;
-    @prop() provider: AuthProviderEnum;
+    @prop({ enum: AuthProviderEnum }) provider: AuthProviderEnum;
 }
 
 @pre<User>('save', preSaveHook)
@@ -72,5 +76,4 @@ async function preSaveHook(next) {
 
 export type UserInstance = InstanceType<User>;
 export type UserRepository = ModelType<User>;
-export const UserRepository = Symbol('UserRepository');
-InjectorService.factory(UserRepository, new User().getModelForClass(User));
+InjectorService.factory(UserRepositoryToken, new User().getModelForClass(User));

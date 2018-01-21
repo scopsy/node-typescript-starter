@@ -1,5 +1,5 @@
 import { JsonProperty } from 'ts-express-decorators';
-import { AuthToken } from '@dal/User';
+import { AuthToken } from '@api/dal/User';
 
 export interface IAuthProviderProfileDto {
     firstName: string;

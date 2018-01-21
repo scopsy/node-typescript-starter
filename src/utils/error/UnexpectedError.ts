@@ -1,4 +1,4 @@
-import { API_ERRORS } from '@app-types/app.errors';
+import { API_ERRORS } from '@api/types/app.errors';
 import { ApiError } from './APIError';
 
 export class UnexpectedError extends ApiError {

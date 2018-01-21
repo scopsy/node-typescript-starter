@@ -1,7 +1,7 @@
 import { Controller, Get, PathParams, Authenticated, Required } from 'ts-express-decorators';
 import { Returns } from 'ts-express-decorators/lib/swagger';
-import { User } from '@dal/User';
-import { UserService } from '@services/user/user.service';
+import { User } from '@api/dal/User';
+import { UserService } from '@api/services/user/user.service';
 
 @Controller('/users')
 @Authenticated()

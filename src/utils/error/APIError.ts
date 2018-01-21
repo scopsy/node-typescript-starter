@@ -1,5 +1,5 @@
 import { isString } from 'lodash';
-import { API_ERRORS } from '@app-types/app.errors';
+import { API_ERRORS } from '@api/types/app.errors';
 
 export interface ErrorPayload {
     status?: number;

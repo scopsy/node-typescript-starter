@@ -1,13 +1,14 @@
-import { UserRepository, UserInstance } from '@dal/User';
+import { UserRepositoryToken } from '@api/dal/token-constants';
+import { UserInstance, UserRepository, AuthProviderEnum } from '@api/dal/User';
 import * as jwt from 'jsonwebtoken';
 import * as moment from 'moment';
 
 import { Inject, Service } from 'ts-express-decorators';
-import { API_ERRORS } from '@app-types/app.errors';
-import { MongoErrorCode } from '@app-types/mongo';
-import { ApiError } from '@utils/error';
-import { UnexpectedError } from '@utils/error/UnexpectedError';
-import { validateEmail } from '@utils/helper.service';
+import { API_ERRORS } from '@api/types/app.errors';
+import { MongoErrorCode } from '@api/types/mongo';
+import { ApiError } from '@api/utils/error';
+import { UnexpectedError } from '@api/utils/error/UnexpectedError';
+import { validateEmail } from '@api/utils/helper.service';
 import { AuthDto, IAuthProviderProfileDto } from './auth.dto';
 import { Request, Response, NextFunction } from 'express';
 import { PassportAuthService } from './passport/passport-auth.service';
@@ -16,16 +17,12 @@ import { AUTH_STRATEGY } from './passport/passport.service';
 const DAY = 60000 * 60 * 24;
 export const TOKEN_EXP = DAY * 7;
 
-export enum AuthProviderEnum {
-    FACEBOOK = 'facebook'
-}
-
 @Service()
 export class AuthService {
     private USER_TOKEN_FIELDS = '_id email lastName firstName picture fullName';
 
     constructor(
-        @Inject(UserRepository) private userRepository: UserRepository,
+        @Inject(UserRepositoryToken) public userRepository: UserRepository,
         private passportAuthService: PassportAuthService
     ) {
 

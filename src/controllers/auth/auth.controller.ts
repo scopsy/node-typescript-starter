@@ -1,11 +1,11 @@
 import { NextFunction } from 'express';
 import { Returns } from 'ts-express-decorators/lib/swagger';
 import { Validate, Validator } from 'typescript-param-validator';
-import { AuthDto } from '@services/auth/auth.dto';
-import { AuthService } from '@services/auth/auth.service';
-import { AUTH_STRATEGY } from '@services/auth/passport/passport.service';
-import { IAppRequest, IAppResponse } from '@app-types/app.types';
-import { HTTPStatusCodes } from '@app-types/http';
+import { AuthDto } from '@api/services/auth/auth.dto';
+import { AuthService } from '@api/services/auth/auth.service';
+import { AUTH_STRATEGY } from '@api/services/auth/passport/passport.service';
+import { IAppRequest, IAppResponse } from '@api/types/app.types';
+import { HTTPStatusCodes } from '@api/types/http';
 import { FacebookTokenAuthQueryDto, LocalLoginDto, SignupDto } from './auth.dto';
 import {
     QueryParams,

@@ -33,7 +33,10 @@
       "**/src/**/*.spec.(ts|js)",
       "**/src/**/*.e2e.(ts|js)"
     ],
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "moduleNameMapper": {
+      "@api/(.*)": "<rootDir>/src/$1"
+    }
   },
   "dependencies": {
     "ajv": "^6.0.1",
