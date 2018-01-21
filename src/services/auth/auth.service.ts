@@ -66,7 +66,6 @@ export class AuthService {
     async authenticateLocal(email: string, password: string): Promise<AuthDto>  {
         const user = await this.userRepository.findOne({ email }, this.USER_TOKEN_FIELDS + ' password');
         if (!user) throw new ApiError(API_ERRORS.USER_NOT_FOUND);
-
         const isMatch = await user.matchPassword(password);
         if (!isMatch) throw new ApiError(API_ERRORS.USER_WRONG_CREDENTIALS);
 
