@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { UserInstance } from '@api/dal/User';
+import { UserInstance } from '../dal/User';
 
 export interface IAppResponse extends Response {
 

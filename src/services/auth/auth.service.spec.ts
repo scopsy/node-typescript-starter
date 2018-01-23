@@ -1,10 +1,10 @@
 jest.mock('jsonwebtoken');
 
-import { UserRepositoryToken } from '@api/dal/token-constants';
 import * as jwt from 'jsonwebtoken';
-import { AuthService } from '@api/services/auth/auth.service';
-import { API_ERRORS } from '@api/types/app.errors';
-import { getInjectionService } from '@api/utils/tests/injectors';
+import { UserRepositoryToken } from '../../dal/token-constants';
+import { API_ERRORS } from '../../types/app.errors';
+import { getInjectionService } from '../../utils/tests/injectors';
+import { AuthService } from './auth.service';
 
 describe('PassportAuth', () => {
     let service: AuthService;

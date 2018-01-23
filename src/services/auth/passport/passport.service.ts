@@ -1,8 +1,8 @@
-import { AuthProviderEnum } from '@api/dal/User';
 import * as passport from 'passport';
 import * as FacebookTokenStrategy from 'passport-facebook-token';
 import { Strategy as LocalStrategy } from 'passport-local';
 import { ExpressApplication, Inject, Service } from 'ts-express-decorators';
+import { AuthProviderEnum } from '../../../dal/User';
 import { IAppRequest } from '../../../types/app.types';
 import { IAuthProviderProfileDto } from '../auth.dto';
 import { AuthService } from '../auth.service';

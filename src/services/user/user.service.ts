@@ -1,6 +1,6 @@
-import { UserRepositoryToken } from '@api/dal/token-constants';
-import { UserRepository } from '@api/dal/User';
 import { Inject, Service } from 'ts-express-decorators';
+import { UserRepositoryToken } from '../../dal/token-constants';
+import { UserRepository } from '../../dal/User';
 
 @Service()
 export class UserService {

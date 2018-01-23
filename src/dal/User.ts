@@ -1,7 +1,7 @@
-import { UserRepositoryToken } from '@api/dal/token-constants';
 import { InjectorService, JsonProperty } from 'ts-express-decorators';
 import { prop, Typegoose, InstanceType, arrayProp, instanceMethod, pre, ModelType } from 'typegoose';
 import * as bcrypt from 'bcrypt-nodejs';
+import { UserRepositoryToken } from './token-constants';
 
 export enum AuthProviderEnum {
     FACEBOOK = 'facebook'

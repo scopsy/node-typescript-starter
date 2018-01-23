@@ -11,10 +11,11 @@
   "scripts": {
     "start": "nodemon",
     "prestart:prod": "npm run build",
-    "start:prod": "node dist/main.js",
+    "start:prod": "node dist/server.js",
     "build": "tsc && npm run tslint",
     "test": "jest --forceExit",
-    "tslint": "tslint -c tslint.json -p tsconfig.json"
+    "tslint": "tslint -c tslint.json -p tsconfig.json",
+    "path": "tspath"
   },
   "jest": {
     "globals": {
@@ -33,10 +34,7 @@
       "**/src/**/*.spec.(ts|js)",
       "**/src/**/*.e2e.(ts|js)"
     ],
-    "testEnvironment": "node",
-    "moduleNameMapper": {
-      "@api/(.*)": "<rootDir>/src/$1"
-    }
+    "testEnvironment": "node"
   },
   "dependencies": {
     "ajv": "^6.0.1",
@@ -62,6 +60,7 @@
     "swagger-ui-express": "^2.0.14",
     "ts-express-decorators": "^3.7.0",
     "ts-log-debug": "^4.0.2",
+    "tspath": "^1.2.10",
     "typegoose": "3.4.7",
     "typescript-param-validator": "^1.1.0"
   },

@@ -1,6 +1,5 @@
 import * as mongoose from 'mongoose';
 import { Service } from 'ts-express-decorators';
-import { $log } from 'ts-log-debug';
 
 (mongoose as any).Promise = global.Promise;
 

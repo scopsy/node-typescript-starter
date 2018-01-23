@@ -1,20 +1,19 @@
 {
     "compilerOptions": {
-        "module": "commonjs",
-        "target": "es6",
         "noImplicitAny": false,
-        "moduleResolution": "node",
-        "experimentalDecorators": true,
-        "emitDecoratorMetadata": true,
-        "sourceMap": true,
         "outDir": "dist",
         "baseUrl": ".",
-        "paths": {
-            "@api/*":["./src/*"]
-        },
         "typeRoots": [
             "node_modules/@types"
-        ]
+        ],
+        "target": "es6",
+        "types": ["reflect-metadata", "jest"],
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "experimentalDecorators":true,
+        "emitDecoratorMetadata": true,
+        "sourceMap": true,
+        "declaration": false
     },
     "include": [
         "src/**/*"

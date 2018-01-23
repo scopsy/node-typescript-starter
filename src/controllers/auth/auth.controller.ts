@@ -1,17 +1,16 @@
 import { NextFunction } from 'express';
+import {
+    BodyParams, Controller, Next, Post, QueryParams, Request, Required, Response,
+    Status
+} from 'ts-express-decorators';
 import { Returns } from 'ts-express-decorators/lib/swagger';
 import { Validate, Validator } from 'typescript-param-validator';
-import { AuthDto } from '@api/services/auth/auth.dto';
-import { AuthService } from '@api/services/auth/auth.service';
-import { AUTH_STRATEGY } from '@api/services/auth/passport/passport.service';
-import { IAppRequest, IAppResponse } from '@api/types/app.types';
-import { HTTPStatusCodes } from '@api/types/http';
+import { AuthDto } from '../../services/auth/auth.dto';
+import { AuthService } from '../../services/auth/auth.service';
+import { AUTH_STRATEGY } from '../../services/auth/passport/passport.service';
+import { IAppRequest, IAppResponse } from '../../types/app.types';
+import { HTTPStatusCodes } from '../../types/http';
 import { FacebookTokenAuthQueryDto, LocalLoginDto, SignupDto } from './auth.dto';
-import {
-    QueryParams,
-    Request, BodyParams,
-    Controller, Post, Response, Next, Required, Status
-} from 'ts-express-decorators';
 
 @Controller('/auth')
 export class AuthController {

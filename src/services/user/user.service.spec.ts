@@ -1,6 +1,6 @@
-import { UserRepositoryToken } from '@api/dal/token-constants';
-import { UserService } from '@api/services/user/user.service';
-import { getInjectionService } from '@api/utils/tests/injectors';
+import { UserRepositoryToken } from '../../dal/token-constants';
+import { getInjectionService } from '../../utils/tests/injectors';
+import { UserService } from './user.service';
 
 describe('UserService', () => {
     it('should fetch user by id', async () => {

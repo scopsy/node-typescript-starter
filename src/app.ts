@@ -12,18 +12,18 @@ dotenv.config({ path: '.env' });
 
 import { ServerLoader, ServerSettings, GlobalAcceptMimesMiddleware } from 'ts-express-decorators';
 import { $log } from 'ts-log-debug';
-import { MongooseService } from '@api/services/shared/mongoose.service';
+import { MongooseService } from './services/shared/mongoose.service';
 
 const rootDir = Path.resolve(__dirname);
 @ServerSettings({
     rootDir,
     mount: {
-        '/v1': `${rootDir}/controllers/**/*.controller.ts`
+        '/v1': `${rootDir}/controllers/**/**.controller.{ts,js}`
     },
     componentsScan: [
-        `${rootDir}/services/**/**.service.ts`,
-        `${rootDir}/middlewares/**/**.ts`,
-        `${rootDir}/dal/**/**.ts`
+        `${rootDir}/services/**/**.service.{ts,js}`,
+        `${rootDir}/middlewares/**/**.{ts,js}`,
+        `${rootDir}/dal/**/**.{ts,js}`
     ],
     httpPort: process.env.PORT || 3000,
     httpsPort: false,
