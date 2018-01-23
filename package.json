@@ -11,7 +11,7 @@
   "scripts": {
     "start": "nodemon",
     "prestart:prod": "npm run build",
-    "start:prod": "node dist/server.js",
+    "start:prod": "NODE_ENV=production node dist/server.js",
     "build": "tsc && npm run tslint",
     "test": "jest --forceExit",
     "tslint": "tslint -c tslint.json -p tsconfig.json",
