@@ -18,7 +18,7 @@ export class AuthMiddleware implements IMiddleware  {
         const token = this.extractHeaderFromRequest(request);
         if (!token) throw new ApiError(API_ERRORS.UNAUTHORIZED);
 
-        await this.authService.validateToken(token);
+        request.user = await this.authService.validateToken(token);
     }
 
     private extractHeaderFromRequest(req: Request): string {
