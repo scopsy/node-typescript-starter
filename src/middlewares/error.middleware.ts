@@ -2,7 +2,7 @@ import { NextFunction as ExpressNext, Request as ExpressRequest, Response as Exp
 import {
     IMiddlewareError, Err, Next, Request, Response,
     OverrideMiddleware, GlobalErrorHandlerMiddleware
-} from 'ts-express-decorators';
+} from '@tsed/common';
 import { ValidatorError } from 'typescript-param-validator';
 import { API_ERRORS } from '../types/app.errors';
 import { ApiError } from '../utils/error';

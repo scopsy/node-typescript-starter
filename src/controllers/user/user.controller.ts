@@ -1,5 +1,5 @@
-import { Controller, Get, PathParams, Authenticated, Required, Req } from 'ts-express-decorators';
-import { Returns } from 'ts-express-decorators/lib/swagger';
+import { Controller, Get, PathParams, Authenticated, Required, Req } from '@tsed/common';
+import { Returns } from '@tsed/swagger';
 import { User } from '../../dal/User';
 import { UserService } from '../../services/user/user.service';
 import { IAppRequest } from '../../types/app.types';

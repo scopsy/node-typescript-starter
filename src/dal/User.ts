@@ -1,4 +1,4 @@
-import { InjectorService, JsonProperty } from 'ts-express-decorators';
+import { InjectorService, JsonProperty } from '@tsed/common';
 import { prop, Typegoose, InstanceType, arrayProp, instanceMethod, pre, ModelType } from 'typegoose';
 import * as bcrypt from 'bcrypt-nodejs';
 import { UserRepositoryToken } from './token-constants';

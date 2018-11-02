@@ -1,5 +1,5 @@
 import { IsEmail, IsNotEmpty as Required, IsOptional, IsUrl, MinLength } from 'class-validator';
-import { JsonProperty } from 'ts-express-decorators';
+import { JsonProperty } from '@tsed/common';
 
 export class FacebookTokenAuthQueryDto {
     access_token: string;
