@@ -1,4 +1,4 @@
-import { Inject, Service } from 'ts-express-decorators';
+import { Inject, Service } from '@tsed/common';
 import { UserRepositoryToken } from '../../dal/token-constants';
 import { UserRepository } from '../../dal/User';
 

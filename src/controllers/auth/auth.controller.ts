@@ -2,8 +2,8 @@ import { NextFunction } from 'express';
 import {
     BodyParams, Controller, Next, Post, QueryParams, Request, Required, Response,
     Status
-} from 'ts-express-decorators';
-import { Returns } from 'ts-express-decorators/lib/swagger';
+} from '@tsed/common';
+import { Returns } from '@tsed/swagger';
 import { Validate, Validator } from 'typescript-param-validator';
 import { AuthDto } from '../../services/auth/auth.dto';
 import { AuthService } from '../../services/auth/auth.service';

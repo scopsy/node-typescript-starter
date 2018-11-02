@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import * as passport from 'passport';
-import { Service } from 'ts-express-decorators';
+import { Service } from '@tsed/common';
 import { AuthDto } from '../auth.dto';
 import { AUTH_STRATEGY } from './passport.service';
 

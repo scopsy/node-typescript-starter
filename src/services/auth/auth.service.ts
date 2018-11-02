@@ -1,7 +1,7 @@
 import * as jwt from 'jsonwebtoken';
 import * as moment from 'moment';
 
-import { Inject, Service } from 'ts-express-decorators';
+import { Inject, Service } from '@tsed/common';
 import { UserRepositoryToken } from '../../dal/token-constants';
 import { AuthProviderEnum, UserInstance, UserRepository } from '../../dal/User';
 import { API_ERRORS } from '../../types/app.errors';
@@ -78,7 +78,7 @@ export class AuthService {
 
     async validateToken(token: string) {
         try {
-            const payload = jwt.verify(token, process.env.SECRET);
+            const payload = jwt.verify(token, process.env.SECRET) as any ;
 
             return await this.rehydrateUser(payload._id);
         } catch (e) {

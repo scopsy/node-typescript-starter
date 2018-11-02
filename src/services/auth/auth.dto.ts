@@ -1,4 +1,4 @@
-import { JsonProperty } from 'ts-express-decorators';
+import { JsonProperty } from '@tsed/common';
 import { AuthToken } from '../../dal/User';
 
 export interface IAuthProviderProfileDto {

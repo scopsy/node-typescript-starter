@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import 'ts-express-decorators/swagger';
+import '@tsed/swagger';
 
 import * as Path from 'path';
 import * as dotenv from 'dotenv';
@@ -10,7 +10,7 @@ import * as compression from 'compression';
 
 dotenv.config({ path: '.env' });
 
-import { ServerLoader, ServerSettings, GlobalAcceptMimesMiddleware } from 'ts-express-decorators';
+import { ServerLoader, ServerSettings, GlobalAcceptMimesMiddleware } from "@tsed/common";
 import { $log } from 'ts-log-debug';
 import { MongooseService } from './services/shared/mongoose.service';
 

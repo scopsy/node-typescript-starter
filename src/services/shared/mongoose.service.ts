@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose';
-import { Service } from 'ts-express-decorators';
+import { Service } from '@tsed/common';
 
 (mongoose as any).Promise = global.Promise;
 
